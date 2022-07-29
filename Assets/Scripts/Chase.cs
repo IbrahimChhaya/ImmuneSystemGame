@@ -22,14 +22,14 @@ public class Chase : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        bool chasing = false;
+        //bool chasing = false;
         player = GameObject.FindGameObjectWithTag("Player");
         //distance to player from enemy
         float distance = Vector3.Distance(transform.position, player.transform.position);
 
         if(distance < enemyDistanceRun)
         {
-            chasing = true;
+            //chasing = true;
             doChase();
         }
         else

@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public class PatrolChase : MonoBehaviour
 {
+    public static PatrolChase instance;
 
     public NavMeshAgent navMeshAgent;
     public float startWaitTime = 4;
@@ -35,9 +36,12 @@ public class PatrolChase : MonoBehaviour
     public float tempDistance;
     public bool collided = false;
 
-    private int probability;
+    private int probability = 20;
     private Vector3 originalPlayerPos;
     private Vector3[] originalEnemyPoses;
+
+    public Material blue;
+    public static bool end = false;
 
     // Start is called before the first frame update
     void Start()
@@ -56,8 +60,6 @@ public class PatrolChase : MonoBehaviour
         navMeshAgent.isStopped = false;
         navMeshAgent.speed = speedWalk;
         navMeshAgent.SetDestination(waypoints[currentWaypointIndex].position);
-
-        probability = Random.Range(1, 100);
 
         originalPlayerPos = GameObject.FindGameObjectWithTag("Player").transform.position;
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -82,6 +84,9 @@ public class PatrolChase : MonoBehaviour
         {
             Chasing();
         }
+
+        if (end)
+            CollisionHelper();
     }
 
     private void Chasing()
@@ -91,8 +96,8 @@ public class PatrolChase : MonoBehaviour
 
         if (!_caughtPlayer)
         {
-            //if(probability <= 20)
-            { 
+            if (Random.Range(1, 100) < probability)
+            {
                 _playerInRange = true;
                 _playerNear = true;
                 Move(speedRun);
@@ -123,10 +128,35 @@ public class PatrolChase : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void OnTriggerEnter(Collider other)
     {
         collided = true;
-        
+
+        /*GameObject player = GameObject.FindGameObjectWithTag("Player");
+        CharacterController cc = player.GetComponent<CharacterController>();
+        cc.enabled = false;
+        player.transform.position = originalPlayerPos;
+        cc.enabled = true;
+
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        int i = 0;
+        foreach (GameObject e in enemies)
+        {
+            e.transform.position = originalEnemyPoses[i];
+            i++;
+            e.GetComponent<Renderer>().material = blue;
+        }
+        currentWaypointIndex = 0;
+        navMeshAgent.SetDestination(waypoints[currentWaypointIndex].position);*/
+
+        //CollisionHelper();
+
+        ScoreManager.instance.AddDeath();
+        probability += 10;
+    }
+
+    private void CollisionHelper()
+    {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         CharacterController cc = player.GetComponent<CharacterController>();
         cc.enabled = false;
@@ -139,11 +169,13 @@ public class PatrolChase : MonoBehaviour
         {
             e.transform.position = originalEnemyPoses[i];
             i++;
+            e.GetComponent<Renderer>().material = blue;
         }
         currentWaypointIndex = 0;
         navMeshAgent.SetDestination(waypoints[currentWaypointIndex].position);
-
-        ScoreManager.instance.AddDeath();
+        if (end)
+            ScoreManager.instance.AddWin();
+        end = false;
     }
 
     private void Patrolling()

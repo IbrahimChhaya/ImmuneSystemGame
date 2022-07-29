@@ -9,8 +9,10 @@ public class ScoreManager : MonoBehaviour
     public static ScoreManager instance;
 
     public Text deathCounterText;
-
     private int deathCounter = 0;
+
+    public Text winCounterText;
+    private int winCounter = 0;
 
     private void Awake()
     {
@@ -20,12 +22,19 @@ public class ScoreManager : MonoBehaviour
     void Start()
     {
         deathCounterText.text = "Death Counter: " + deathCounter.ToString();
+        winCounterText.text = "Win Counter: " + winCounter.ToString();
     }
 
     public void AddDeath()
     {
         deathCounter++;
         deathCounterText.text = "Death Counter: " + deathCounter.ToString();
+    }
+
+    public void AddWin()
+    {
+        winCounter++;
+        winCounterText.text = "Win Counter: " + winCounter.ToString();
     }
 
     // Update is called once per frame

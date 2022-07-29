@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class FieldOfView : MonoBehaviour
 {
@@ -35,13 +36,13 @@ public class FieldOfView : MonoBehaviour
         {
             yield return wait;
             FieldOfViewCheck();
-            if (canSeePlayer)
+            /*if (canSeePlayer)
             {
                 foreach (GameObject e in enemy)
                 {
                     e.GetComponent<Renderer>().material = red;
                 }
-            }
+            }*/
         }    
     }
 
@@ -52,7 +53,7 @@ public class FieldOfView : MonoBehaviour
         //look for object with the specific layerMask (the player)
         Collider[] rangeChecks = Physics.OverlapSphere(transform.position, radius, targetMask);
 
-        //there exists a collider
+        //there exists a collider with player layerMask
         if(rangeChecks.Length != 0)
         {
             //there is only the player there so just get the first one
@@ -84,6 +85,23 @@ public class FieldOfView : MonoBehaviour
         else if(canSeePlayer)
         {
             canSeePlayer = false;
+        }
+
+        if(canSeePlayer)
+        { 
+            Collider[] enemyRangeCheck = Physics.OverlapSphere(transform.position, radius);
+
+            if(enemyRangeCheck.Length != 0)
+            {
+                foreach(Collider col in enemyRangeCheck)
+                {
+                    if(col.gameObject.tag == "Enemy")
+                    {
+                        col.gameObject.GetComponent<Renderer>().material = red;
+                        col.gameObject.GetComponent<NavMeshAgent>().SetDestination(transform.position);
+                    }
+                }
+            }
         }
     }
 
