@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -18,6 +20,7 @@ public class EnemyController : Character
     public LayerMask obstructionMask;
     //material to change enemy colour upon player sight
     public Material red;
+    public Material blue;
     public bool canSeePlayer;
 
     public NavMeshAgent navMeshAgent;
@@ -33,11 +36,23 @@ public class EnemyController : Character
     public bool _caughtPlayer;
     private Vector3 playerPosition;
     public float currentSpeed = 0;
+    
+    public TextMesh tm;
+    GameObject sign;
+
+    public int probability;
+
+    private Vector3 originalPlayerPos;
+    private Vector3[] originalEnemyPoses;
+    private Vector3 originalEnemyPos;
+    public bool end = false;
 
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+        originalPlayerPos = player.transform.position;
+
         StartCoroutine(FoVRoutine());
 
         isPatrol = true;
@@ -48,6 +63,25 @@ public class EnemyController : Character
         navMeshAgent.SetDestination(waypoints[currentWaypoint].position);
 
         _waitTime = startWaitTime;
+
+        sign = new GameObject("enemyAffinity");
+        sign.transform.rotation = Camera.main.transform.rotation;
+
+        tm = sign.AddComponent<TextMesh>();
+        GenerateSignature();
+        //CalculateAffinity();
+        CalculateLevenshtein();
+        tm.text = "Affinity: " + Affinity;
+        tm.color = new Color(0.8f, 0.8f, 0.8f);
+        tm.fontStyle = FontStyle.Bold;
+        tm.alignment = TextAlignment.Center;
+        tm.anchor = TextAnchor.MiddleCenter;
+        tm.characterSize = 0.065f;
+        tm.fontSize = 60;
+
+        probability = UnityEngine.Random.Range(1, 100);
+
+        originalEnemyPos = transform.position;
     }
 
     private IEnumerator FoVRoutine()
@@ -81,12 +115,15 @@ public class EnemyController : Character
                 //is the player close enough 
                 float distanceToTarget = Vector3.Distance(transform.position, target.position);
 
-                //a raycast from the centre of enemy aimed at the player, limited by distance and obstructions
-                if (!Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obstructionMask))
-                {
-                    canSeePlayer = true;
-                    isPatrol = false;
-                    playerPosition = player.transform.position;
+                if (probability <= Affinity)
+                { 
+                    //a raycast from the centre of enemy aimed at the player, limited by distance and obstructions
+                    if (!Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obstructionMask))
+                    {
+                        canSeePlayer = true;
+                        isPatrol = false;
+                        playerPosition = player.transform.position;
+                    }
                 }
             }
             if (Vector3.Distance(transform.position, target.position) > fovRadius)
@@ -96,6 +133,16 @@ public class EnemyController : Character
     }
 
     // Update is called once per frame
+    private void Update()
+    {
+        sign.transform.position = transform.position + Vector3.up * 3f;
+        /*if (EndGame.end)
+        {
+            CollisionHelper();
+        }*/
+    }
+
+
     void FixedUpdate()
     {
         //check fov
@@ -114,9 +161,13 @@ public class EnemyController : Character
         //if the player hasn't been caught yet
         if (!_caughtPlayer)
         {
-            //run to the player's last known position
-            Move(speedRun);
-            navMeshAgent.SetDestination(playerPosition);
+            //if (probability <= Affinity)
+            {
+                //run to the player's last known position
+                Move(speedRun);
+                navMeshAgent.SetDestination(playerPosition);
+                gameObject.GetComponent<Renderer>().material = red;
+            }
         }
 
         //if the destination has been reached
@@ -147,11 +198,55 @@ public class EnemyController : Character
     {
         _caughtPlayer = true;
         ScoreManager.instance.AddDeath();
+        Affinity += 10;
+        end = true;
+        CollisionHelper();
+    }
+
+    public void CollisionHelper()
+    {
+        isPatrol = true;
+        canSeePlayer = false;
+        currentWaypoint = 0;
+        navMeshAgent.SetDestination(waypoints[currentWaypoint].position);
+        transform.position = originalEnemyPos;
+        GetComponent<Renderer>().material = blue;
+        navMeshAgent.isStopped = false;
+        navMeshAgent.speed = speedWalk;
+        _waitTime = startWaitTime;
+
+        if (end)
+        {
+            CharacterController cc = player.GetComponent<CharacterController>();
+            cc.enabled = false;
+            player.transform.position = PlayerController.originalPlayerPos;
+            cc.enabled = true;
+
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            //int i = 0;
+            foreach (GameObject e in enemies)
+            {
+                if(e != gameObject)
+                {
+                    if (UnityEngine.Random.Range(1, 100) <= probability)
+                        e.GetComponent<EnemyController>().Affinity = Affinity;
+                    e.GetComponent<EnemyController>().CollisionHelper();
+                }
+            }
+        }
+        end = false;
+
+        _caughtPlayer = false;
+        tm.text = "Affinity: " + Affinity;
     }
 
     private void Patrolling()
     {
+        gameObject.GetComponent<Renderer>().material = blue;
+
         navMeshAgent.SetDestination(waypoints[currentWaypoint].position);
+        Move(speedWalk);
+
         //if reached desitination
         if (navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
         {
@@ -192,4 +287,53 @@ public class EnemyController : Character
         currentWaypoint = (currentWaypoint + 1) % waypoints.Length;
         navMeshAgent.SetDestination(waypoints[currentWaypoint].position);
     }
+
+    public void CalculateAffinity()
+    {
+        var playerSignature = PlayerController.tempSignature;
+
+        Affinity = playerSignature.Zip(Signature, (ps, s) => ps != s).Count(f => f);
+        Affinity = 100 - ((Affinity/12)*100);
+    }
+
+    public void CalculateLevenshtein()
+    {
+        var string1 = PlayerController.tempSignature;
+        var string2 = Signature;
+
+        //2D array
+        var matrix = new int[string1.Length + 1, string2.Length + 1];
+
+        //initialise the matrix with row size string1.length and column size string2.length
+        for (var i = 0; i <= string1.Length; matrix[i, 0] = i++)
+        {
+
+        }
+        for (var j = 0; j <= string2.Length; matrix[0, j] = j++)
+        {
+
+        }
+
+        for (var i = 1; i <= string1.Length; i++)
+        {
+            for ( var j = 1; j <= string2.Length; j++)
+            {
+                var cost = (string2[j - 1] == string1[i - 1]) ? 0 : 1;
+
+                matrix[i, j] = Math.Min(
+                        Math.Min(matrix[i - 1, j] + 1, matrix[i, j - 1] + 1),
+                        matrix[i - 1, j - 1] + cost);
+            }
+        }
+        Affinity = matrix[string1.Length, string2.Length];
+        Affinity = 100 - ((Affinity / 12) * 100);
+    }
 }
+
+/* ok so you managed to fix endgame by reaching the end room and by collision
+ * and you managed to fix chasing
+ * problem rn is the bot still moves after being reset, has to be a property of this navmesh agent
+ * next up is probabilistic detection and attack
+ * do a more complicated string distance metric
+ * then clonal expansion of those that did detection and attack
+ */

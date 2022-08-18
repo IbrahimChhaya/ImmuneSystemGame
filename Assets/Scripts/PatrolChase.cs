@@ -151,8 +151,8 @@ public class PatrolChase : MonoBehaviour
 
         //CollisionHelper();
 
-        ScoreManager.instance.AddDeath();
-        probability += 10;
+        //ScoreManager.instance.AddDeath();
+        //probability += 10;
     }
 
     private void CollisionHelper()

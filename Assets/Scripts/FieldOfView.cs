@@ -87,7 +87,7 @@ public class FieldOfView : MonoBehaviour
             canSeePlayer = false;
         }
 
-        if(canSeePlayer)
+        /*if(canSeePlayer)
         { 
             Collider[] enemyRangeCheck = Physics.OverlapSphere(transform.position, radius);
 
@@ -102,7 +102,7 @@ public class FieldOfView : MonoBehaviour
                     }
                 }
             }
-        }
+        }*/
     }
 
     // Update is called once per frame
