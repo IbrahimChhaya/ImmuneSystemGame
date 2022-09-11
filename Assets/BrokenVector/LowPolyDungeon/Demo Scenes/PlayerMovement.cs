@@ -12,13 +12,32 @@ public class PlayerMovement : MonoBehaviour
 
     float speedBoost = 1f;
     Vector3 velocity;
+
+    public GameObject panel;
+    bool paused;
     void Start()
     {
-
+        paused = false;
     }
 
     void Update()
     {
+        if(Input.GetKeyDown("escape"))
+        {
+            if(paused == false)
+            {
+                panel.gameObject.SetActive(true);
+                paused = true;
+                Time.timeScale = 0f;
+            }
+            else
+            {
+                paused = false;
+                panel.gameObject.SetActive(false);
+                Time.timeScale = 1f;
+            }
+        }    
+
         if (controller.isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;

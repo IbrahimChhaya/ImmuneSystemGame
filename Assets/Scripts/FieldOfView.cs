@@ -25,6 +25,10 @@ public class FieldOfView : MonoBehaviour
         //get player
         playerRef = GameObject.FindGameObjectWithTag("Player");
         StartCoroutine(FoVRoutine());
+
+        //random fovangle and radius
+        angle = Random.Range(95, 120);
+        radius = Random.Range(5, 9);
     }
 
     private IEnumerator FoVRoutine()
@@ -87,7 +91,7 @@ public class FieldOfView : MonoBehaviour
             canSeePlayer = false;
         }
 
-        if(canSeePlayer)
+        /*if(canSeePlayer)
         { 
             Collider[] enemyRangeCheck = Physics.OverlapSphere(transform.position, radius);
 
@@ -102,7 +106,7 @@ public class FieldOfView : MonoBehaviour
                     }
                 }
             }
-        }
+        }*/
     }
 
     // Update is called once per frame
