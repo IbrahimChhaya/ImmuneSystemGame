@@ -6,6 +6,11 @@ TagManager:
   tags:
   - Enemy
   - PlayerGroup
+  - OptionsMenu
+  - Hamming
+  - Levenshtein
+  - Unnamed
+  - MainMenu
   layers:
   - Default
   - TransparentFX
