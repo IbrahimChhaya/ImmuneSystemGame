@@ -12,6 +12,7 @@ public class Character : MonoBehaviour
     public bool IsDead = false;
     public string Signature;
     public float Affinity = 0;
+    
     //private static Random random;
 
     // Start is called before the first frame update
@@ -38,11 +39,16 @@ public class Character : MonoBehaviour
 
     public virtual void GenerateSignature()
     {
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_+=/`~<>,.?';:{}[]|";
         Signature = "";
-        for(int i = 0; i < 12; i++)
+        int signatureLength = 12;
+        if(PlayerPrefs.HasKey("signatureLength"))
+        { 
+            signatureLength = PlayerPrefs.GetInt("signatureLength");
+        }
+        for (int i = 0; i < signatureLength; i++)
         {
-            Signature += chars[Random.Range(0, 12)];
+            Signature += chars[Random.Range(0, signatureLength)];
         }
     }
 

@@ -37,7 +37,7 @@ public class EnemyController : Character
     public bool _caughtPlayer;
     private Vector3 playerPosition;
     public float currentSpeed = 0;
-    
+
     public TextMesh tm;
     GameObject sign;
 
@@ -70,8 +70,16 @@ public class EnemyController : Character
 
         tm = sign.AddComponent<TextMesh>();
         GenerateSignature();
-        //CalculateAffinity();
-        CalculateLevenshtein();
+        string activeDistance = PlayerPrefs.GetString("activeDistance");
+        if (activeDistance == "J")
+            CalculateJaro();
+        else if (activeDistance == "L")
+            CalculateLevenshtein();
+        else
+        { 
+            CalculateAffinity();
+            PlayerPrefs.SetString("activeDistance", "H");
+        }
         tm.text = "Affinity: " + Affinity;
         tm.color = new Color(0.8f, 0.8f, 0.8f);
         tm.fontStyle = FontStyle.Bold;
@@ -92,8 +100,8 @@ public class EnemyController : Character
     private IEnumerator FoVRoutine()
     {
         WaitForSeconds wait = new WaitForSeconds(0.2f);
-        
-        while(true)
+
+        while (true)
         {
             yield return wait;
             FieldOfViewCheck();
@@ -108,7 +116,7 @@ public class EnemyController : Character
         Collider[] rangeChecks = Physics.OverlapSphere(transform.position, fovRadius, targetMask);
 
         //if there exists a collider with player layermask
-        if(rangeChecks.Length != 0)
+        if (rangeChecks.Length != 0)
         {
             //there is only the player there so just get the first one
             Transform target = rangeChecks[0].transform;
@@ -121,7 +129,7 @@ public class EnemyController : Character
                 float distanceToTarget = Vector3.Distance(transform.position, target.position);
 
                 if (probability <= Affinity)
-                { 
+                {
                     //a raycast from the centre of enemy aimed at the player, limited by distance and obstructions
                     if (!Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obstructionMask))
                     {
@@ -234,7 +242,7 @@ public class EnemyController : Character
             //int i = 0;
             foreach (GameObject e in enemies)
             {
-                if(e != gameObject)
+                if (e != gameObject)
                 {
                     if (Random.Range(1, 100) <= probability)
                         e.GetComponent<EnemyController>().Affinity = Affinity;
@@ -265,7 +273,7 @@ public class EnemyController : Character
         if (navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
         {
             //waiting done
-            if(_waitTime <= 0)
+            if (_waitTime <= 0)
             {
                 //go to next point
                 NextPoint();
@@ -307,7 +315,7 @@ public class EnemyController : Character
         var playerSignature = PlayerController.tempSignature;
 
         Affinity = playerSignature.Zip(Signature, (ps, s) => ps != s).Count(f => f);
-        Affinity = 100 - ((Affinity/12)*100);
+        Affinity = 100 - ((Affinity / 12) * 100);
     }
 
     public void CalculateLevenshtein()
@@ -330,7 +338,7 @@ public class EnemyController : Character
 
         for (var i = 1; i <= string1.Length; i++)
         {
-            for ( var j = 1; j <= string2.Length; j++)
+            for (var j = 1; j <= string2.Length; j++)
             {
                 var cost = (string2[j - 1] == string1[i - 1]) ? 0 : 1;
 
@@ -341,6 +349,123 @@ public class EnemyController : Character
         }
         Affinity = matrix[string1.Length, string2.Length];
         Affinity = 100 - ((Affinity / 12) * 100);
+    }
+
+    // Function to calculate the Jaro Similarity of two strings
+    static double jaroDistance(string s1, string s2)
+    {
+        // If the strings are equal
+        if (s1 == s2)
+            return 1.0;
+
+        // Length of two strings
+        int len1 = s1.Length,
+            len2 = s2.Length;
+
+        if (len1 == 0 || len2 == 0)
+            return 0.0;
+
+        // Maximum distance upto which matching
+        // is allowed
+        int maxDist = (int)Math.Floor((double)
+                        Math.Max(len1, len2) / 2) - 1;
+
+        // Count of matches
+        int match = 0;
+
+        // Hash for matches
+        int[] hash_s1 = new int[s1.Length];
+        int[] hash_s2 = new int[s2.Length];
+
+        // Traverse through the first string
+        for (int i = 0; i < len1; i++)
+        {
+
+            // Check if there is any matches
+            for (int j = Math.Max(0, i - maxDist);
+                j < Math.Min(len2, i + maxDist + 1); j++)
+
+                // If there is a match
+                if (s1[i] == s2[j] &&
+                    hash_s2[j] == 0)
+                {
+                    hash_s1[i] = 1;
+                    hash_s2[j] = 1;
+                    match++;
+                    break;
+                }
+        }
+
+        // If there is no match
+        if (match == 0)
+            return 0.0;
+
+        // Number of transpositions
+        double t = 0;
+
+        int point = 0;
+
+        // Count number of occurrences
+        // where two characters match but
+        // there is a third matched character
+        // in between the indices
+        for (int i = 0; i < len1; i++)
+            if (hash_s1[i] == 1)
+            {
+
+                // Find the next matched character
+                // in second string
+                while (hash_s2[point] == 0)
+                    point++;
+
+                if (s1[i] != s2[point++])
+                    t++;
+            }
+        t /= 2;
+
+        // Return the Jaro Similarity
+        return (((double)match) / ((double)len1)
+                + ((double)match) / ((double)len2)
+                + ((double)match - t) / ((double)match))
+            / 3.0;
+    }
+
+    // Jaro Winkler Similarity
+    double CalculateJaro()
+    {
+
+        var string1 = PlayerController.tempSignature;
+        var string2 = Signature;
+        double jaroDist = jaroDistance(string1, string2);
+
+        // If the jaro Similarity is above a threshold
+        if (jaroDist > 0.7)
+        {
+
+            // Find the length of common prefix
+            int prefix = 0;
+
+            for (int i = 0; i < Math.Min(string1.Length,
+                                        string2.Length); i++)
+            {
+
+                // If the characters match
+                if (string1[i] == string2[i])
+                    prefix++;
+
+                // Else break
+                else
+                    break;
+            }
+
+            // Maximum of 4 characters are allowed in prefix
+            prefix = Math.Min(4, prefix);
+
+            // Calculate jaro winkler Similarity
+            jaroDist += 0.1 * prefix * (1 - jaroDist);
+        }
+        Affinity = (float)jaroDist * 100;
+        return jaroDist;
     }
 }
 

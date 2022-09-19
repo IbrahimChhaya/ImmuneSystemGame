@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
@@ -11,15 +13,39 @@ public class MainMenu : MonoBehaviour
     public GameObject levenshteinOn;
     public GameObject levenshteinOff;
 
-    public GameObject unnamedOn;
-    public GameObject unnamedOff;
+    public GameObject jaroOn;
+    public GameObject jaroOff;
 
     public GameObject mainMenu;
     public GameObject optionsMenu;
+
+    public TMP_Text stringLength;
+    public Slider slider;
     // Start is called before the first frame update
     void Start()
     {
-        
+        if(PlayerPrefs.HasKey("activeDistance"))
+        {
+            string activeDistance = PlayerPrefs.GetString("activeDistance");
+            switch(activeDistance)
+            {
+                case "H":
+                    hammingHelper();
+                    break;
+                case "L":
+                    levenshteinHelper();
+                    break;
+                case "J":
+                    jaroHelper();
+                    break;
+            }
+        }
+        if(PlayerPrefs.HasKey("signatureLength"))
+        {
+            int length = PlayerPrefs.GetInt("signatureLength");
+            stringLength.text = length.ToString();
+            slider.value = length;
+        }
     }
 
     // Update is called once per frame
@@ -28,54 +54,80 @@ public class MainMenu : MonoBehaviour
         
     }
 
+    public void lengthUpdate(float value)
+    {
+        int length = Mathf.RoundToInt(value);
+        stringLength.text = length + " chars";
+        PlayerPrefs.SetInt("signatureLength", length);
+    }
+
     public void Options()
     {
         optionsMenu.SetActive(true);
         gameObject.SetActive(false);
     }
 
+    private void hammingHelper()
+    {
+        hammingOn.SetActive(true);
+        hammingOff.SetActive(false);
+
+        levenshteinOn.SetActive(false);
+        levenshteinOff.SetActive(true);
+
+        jaroOn.SetActive(false);
+        jaroOff.SetActive(true);
+    }
+
     public void enableHamming()
     {
         if(!hammingOn.activeSelf)
         {
-            hammingOn.SetActive(true);
-            hammingOff.SetActive(false);
-
-            levenshteinOn.SetActive(false);
-            levenshteinOff.SetActive(true);
-
-            unnamedOn.SetActive(false);
-            unnamedOff.SetActive(true);
+            hammingHelper();
+            PlayerPrefs.SetString("activeDistance", "H");
         }
+    }
+
+    private void levenshteinHelper()
+    {
+        levenshteinOn.SetActive(true);
+        //EnemyController.activeDistance = "L";
+        levenshteinOff.SetActive(false);
+
+        hammingOn.SetActive(false);
+        hammingOff.SetActive(true);
+
+        jaroOn.SetActive(false);
+        jaroOff.SetActive(true);
     }
 
     public void enableLevenshtein()
     {
         if (!levenshteinOn.activeSelf)
         {
-            levenshteinOn.SetActive(true);
-            levenshteinOff.SetActive(false);
-
-            hammingOn.SetActive(false);
-            hammingOff.SetActive(true);
-
-            unnamedOn.SetActive(false);
-            unnamedOff.SetActive(true);
+            levenshteinHelper();
+            PlayerPrefs.SetString("activeDistance", "L");
         }
     }
 
-    public void enableUnnamed()
+    private void jaroHelper()
     {
-        if (!unnamedOn.activeSelf)
+        jaroOn.SetActive(true);
+        jaroOff.SetActive(false);
+
+        hammingOn.SetActive(false);
+        hammingOff.SetActive(true);
+
+        levenshteinOn.SetActive(false);
+        levenshteinOff.SetActive(true);
+    }
+
+    public void enableJaro()
+    {
+        if (!jaroOn.activeSelf)
         {
-            unnamedOn.SetActive(true);
-            unnamedOff.SetActive(false);
-
-            hammingOn.SetActive(false);
-            hammingOff.SetActive(true);
-
-            levenshteinOn.SetActive(false);
-            levenshteinOff.SetActive(true);
+            jaroHelper();
+            PlayerPrefs.SetString("activeDistance", "J");
         }
     }
 

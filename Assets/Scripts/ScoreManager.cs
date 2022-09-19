@@ -14,6 +14,8 @@ public class ScoreManager : MonoBehaviour
     public Text winCounterText;
     private int winCounter = 0;
 
+    public Text activeDistance;
+
     private void Awake()
     {
         instance = this;
@@ -23,6 +25,7 @@ public class ScoreManager : MonoBehaviour
     {
         deathCounterText.text = "Death Counter: " + deathCounter.ToString();
         winCounterText.text = "Win Counter: " + winCounter.ToString();
+        activeDistance.text = "Current Distance Metric: " + PlayerPrefs.GetString("activeDistance");
     }
 
     public void AddDeath()
