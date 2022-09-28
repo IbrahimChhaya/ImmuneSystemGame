@@ -18,9 +18,21 @@ public class MainMenu : MonoBehaviour
 
     public GameObject mainMenu;
     public GameObject optionsMenu;
+    public GameObject playMenu;
 
     public TMP_Text stringLength;
     public Slider slider;
+
+    public GameObject dungeonButton;
+    public GameObject bridgeButton;
+
+    private Image dungeonImage;
+    private Image bridgeImage;
+
+    private string activeMap;
+
+    //public Button playButton;
+    public GameObject PlayButton;
     // Start is called before the first frame update
     void Start()
     {
@@ -46,6 +58,9 @@ public class MainMenu : MonoBehaviour
             stringLength.text = length.ToString();
             slider.value = length;
         }
+
+        dungeonImage = dungeonButton.GetComponent<Image>();
+        bridgeImage = bridgeButton.GetComponent<Image>();
     }
 
     // Update is called once per frame
@@ -133,17 +148,73 @@ public class MainMenu : MonoBehaviour
 
     public void BackOptions()
     {
-        mainMenu.SetActive(true);
         gameObject.SetActive(false);
+        mainMenu.SetActive(true);
+    }
+
+    public void BackPlay()
+    {
+        mainMenu.SetActive(true);
+        playMenu.SetActive(false);
+    }
+
+    public void SelectMap()
+    {
+        gameObject.SetActive(false);
+        playMenu.SetActive(true);
     }
 
     public void PlayGame()
     {
-        SceneManager.LoadScene("GameScene");
+        if (activeMap == "Dungeon")
+        {
+            //load dungeon
+            SceneManager.LoadScene("DungeonScene");
+        }
+        else if (activeMap == "Bridge")
+        {
+            //create a bridge scene
+            SceneManager.LoadScene("BridgeScene");
+        }
     }
 
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    public void DungeonButtonPress()
+    {
+        //set to white
+        dungeonImage.color = new Color32(255, 255, 255, 255);
+        //set to default
+        bridgeImage.color = new Color32(38, 35, 35, 255);
+
+        activeMap = "Dungeon";
+
+        //activate the button by making it interactable and by changing its text colour
+        PlayButton.GetComponent<Image>().color = Color.white;
+        Button playButton = PlayButton.GetComponent<Button>();
+        playButton.interactable = true;
+        TMP_Text playText = playButton.GetComponentInChildren<TMP_Text>();
+        playText.color = Color.white;
+
+    }
+
+    public void BridgeButtonPress()
+    {
+        //set to white
+        bridgeImage.color = new Color32(255, 255, 255, 255);
+        //set to default
+        dungeonImage.color = new Color32(38, 35, 35, 255);
+
+        activeMap = "Bridge";
+
+        //activate the button by making it interactable and by changing its text colour
+        PlayButton.GetComponent<Image>().color = Color.white;
+        Button playButton = PlayButton.GetComponent<Button>();
+        playButton.interactable = true;
+        TMP_Text playText = playButton.GetComponentInChildren<TMP_Text>();
+        playText.color = Color.white;
     }
 }

@@ -80,6 +80,7 @@ public class EnemyController : Character
             CalculateAffinity();
             PlayerPrefs.SetString("activeDistance", "H");
         }
+
         tm.text = "Affinity: " + Affinity;
         tm.color = new Color(0.8f, 0.8f, 0.8f);
         tm.fontStyle = FontStyle.Bold;

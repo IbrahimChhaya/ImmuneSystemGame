@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 1037
   m_ShowMode: 4
-  m_Title: Hierarchy
+  m_Title: Project
   m_RootView: {fileID: 9}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -43,8 +43,8 @@ MonoBehaviour:
     y: 0
     width: 433
     height: 987
-  m_MinSize: {x: 276, y: 71}
-  m_MaxSize: {x: 4001, y: 4021}
+  m_MinSize: {x: 275, y: 50}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 16}
   m_Panes:
   - {fileID: 16}
@@ -71,8 +71,8 @@ MonoBehaviour:
     y: 467
     width: 928
     height: 520
-  m_MinSize: {x: 201, y: 221}
-  m_MaxSize: {x: 4001, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 19}
   m_Panes:
   - {fileID: 19}
@@ -102,7 +102,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 200}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 80
+  controlID: 114
 --- !u!114 &5
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -122,8 +122,8 @@ MonoBehaviour:
     y: 0
     width: 264
     height: 987
-  m_MinSize: {x: 202, y: 221}
-  m_MaxSize: {x: 4002, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 17}
   m_Panes:
   - {fileID: 17}
@@ -152,7 +152,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 200}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 1
-  controlID: 118
+  controlID: 81
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -179,7 +179,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 200}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
-  controlID: 119
+  controlID: 82
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -5036,13 +5036,13 @@ MonoBehaviour:
       workTreeStatus: 3
     changedFilesText: 96 changed files
     lastCurrentBranchChangedEvent:
-      updatedTimeString: 2022-09-19T23:40:38.976+02:00
+      updatedTimeString: 2022-09-28T21:54:45.702+02:00
       cacheType: 1
     lastStatusEntriesChangedEvent:
-      updatedTimeString: 2022-09-19T23:47:07.829+02:00
+      updatedTimeString: 2022-09-28T22:32:22.904+02:00
       cacheType: 6
     lastLocksChangedEvent:
-      updatedTimeString: 0001-01-01T00:00:00.000+00:00
+      updatedTimeString: 2022-09-28T21:54:45.710+02:00
       cacheType: 7
   historyView:
     currentLogHasUpdate: 0
@@ -19082,18 +19082,18 @@ MonoBehaviour:
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
-  m_StartGridSize: 64
+  m_StartGridSize: 58
   m_LastFolders:
   - Assets/Scenes
-  m_LastFoldersGridSize: -1
+  m_LastFoldersGridSize: 58
   m_LastProjectPath: C:\Users\Ibrahim Chhaya\Documents\AI Unity Game\ImmuneSystemGame
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: c64e0000
-    m_LastClickedID: 20166
-    m_ExpandedIDs: 00000000a64e0000a84e0000aa4e0000ac4e000000ca9a3bffffff7f
+    m_SelectedIDs: e2550000
+    m_LastClickedID: 21986
+    m_ExpandedIDs: 00000000b8550000ba550000bc550000be5500004262000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -19121,7 +19121,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000a64e0000a84e0000aa4e0000ac4e0000
+    m_ExpandedIDs: 00000000b8550000ba550000bc550000be550000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -19165,7 +19165,7 @@ MonoBehaviour:
       m_IsRenaming: 0
       m_OriginalEventType: 11
       m_IsRenamingFilename: 1
-      m_ClientGUIView: {fileID: 12}
+      m_ClientGUIView: {fileID: 8}
     m_CreateAssetUtility:
       m_EndAction: {fileID: 0}
       m_InstanceID: 0
@@ -19174,7 +19174,7 @@ MonoBehaviour:
       m_ResourceFile: 
     m_NewAssetIndexInList: -1
     m_ScrollPosition: {x: 0, y: 0}
-    m_GridSize: 64
+    m_GridSize: 58
   m_SkipHiddenPackages: 0
   m_DirectoriesAreaWidth: 108
 --- !u!114 &16
@@ -19249,25 +19249,25 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 
+      m_SelectedIDs: 04560000
       m_LastClickedID: 0
-      m_ExpandedIDs: bc6fffff6873ffffc483ffff26cbffffe0f8ffff38fbffff22580000c6580000be7100000cba00004cce0000c8ce00000ed3000036d3000084d3000098d30000
+      m_ExpandedIDs: 5474ffff9285ffff8497ffff62a7ffff38fbffff24500000046a0000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: 
-        m_OriginalName: 
+        m_Name: Bridge
+        m_OriginalName: Bridge
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 0
+        m_UserData: -24788
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 11
+        m_OriginalEventType: 0
         m_IsRenamingFilename: 0
-        m_ClientGUIView: {fileID: 12}
+        m_ClientGUIView: {fileID: 5}
       m_SearchString: 
     m_ExpandedScenes: []
     m_CurrenRootInstanceID: 0
@@ -19319,9 +19319,9 @@ MonoBehaviour:
       floating: 0
       collapsed: 0
       displayed: 1
-      snapOffset: {x: -141, y: -197.4}
+      snapOffset: {x: -141, y: 149}
       snapOffsetDelta: {x: 0, y: 0}
-      snapCorner: 3
+      snapCorner: 1
       id: unity-grid-and-snap-toolbar
       index: 1
       layout: 1
@@ -19500,9 +19500,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 911.67786, y: 657.48444, z: 150.5752}
+    m_Target: {x: -24.49641, y: -1.0082808, z: 2.6604261}
     speed: 2
-    m_Value: {x: 911.67786, y: 657.48444, z: 150.5752}
+    m_Value: {x: -24.49641, y: -1.0082808, z: 2.6604261}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -19514,7 +19514,7 @@ MonoBehaviour:
   m_SceneViewState:
     m_AlwaysRefresh: 0
     showFog: 1
-    showSkybox: 1
+    showSkybox: 0
     showFlares: 1
     showImageEffects: 1
     showParticleSystems: 1
@@ -19549,13 +19549,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.00869043, y: -0.00808755, z: -0.000059121812, w: -0.99995077}
+    m_Target: {x: -0.064322494, y: -0.588962, z: 0.04710568, w: -0.8042464}
     speed: 2
-    m_Value: {x: 0.008690245, y: -0.008087379, z: -0.000059120557, w: -0.99992955}
+    m_Value: {x: -0.06552728, y: -0.5888775, z: 0.047988046, w: -0.80413103}
   m_Size:
-    m_Target: 578.9502
+    m_Target: 20.867487
     speed: 2
-    m_Value: 578.9502
+    m_Value: 19.144484
   m_Ortho:
     m_Target: 0
     speed: 2
