@@ -8,6 +8,8 @@ public class PlayerController : Character
     public static Vector3 originalPlayerPos;
 
     public static string tempSignature;
+
+    public static bool isBeingChased;
     private void Awake()
     {
         instance = this;

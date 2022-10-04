@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class EnemyController : Character
@@ -22,6 +23,10 @@ public class EnemyController : Character
     //material to change enemy colour upon player sight
     public Material red;
     public Material blue;
+    public Material eyeRed;
+    public Material eyeBlue;
+    public GameObject eye;
+
     public bool canSeePlayer;
 
     public NavMeshAgent navMeshAgent;
@@ -48,6 +53,9 @@ public class EnemyController : Character
     private Vector3 originalEnemyPos;
     public bool end = false;
 
+    private int age;
+    public Image healthBarSprite;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -55,6 +63,7 @@ public class EnemyController : Character
         originalPlayerPos = player.transform.position;
 
         StartCoroutine(FoVRoutine());
+        StartCoroutine(lifelineCount());
 
         isPatrol = true;
         _caughtPlayer = false;
@@ -96,6 +105,8 @@ public class EnemyController : Character
         //random fovangle and radius
         fovAngle = Random.Range(95, 120);
         fovRadius = Random.Range(5, 9);
+
+        age = 15;
     }
 
     private IEnumerator FoVRoutine()
@@ -106,6 +117,18 @@ public class EnemyController : Character
         {
             yield return wait;
             FieldOfViewCheck();
+        }
+    }
+
+    private IEnumerator lifelineCount()
+    {
+        WaitForSeconds wait = new WaitForSeconds(10);
+
+        while (true)
+        {
+            yield return wait;
+            age -= 5;
+            healthBarSprite.fillAmount = Health / MaxHealth;
         }
     }
 
@@ -129,7 +152,7 @@ public class EnemyController : Character
                 //is the player close enough 
                 float distanceToTarget = Vector3.Distance(transform.position, target.position);
 
-                if (probability <= Affinity)
+                //if (probability <= Affinity)
                 {
                     //a raycast from the centre of enemy aimed at the player, limited by distance and obstructions
                     if (!Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obstructionMask))
@@ -154,6 +177,8 @@ public class EnemyController : Character
         {
             CollisionHelper();
         }*/
+
+
     }
 
 
@@ -175,12 +200,14 @@ public class EnemyController : Character
         //if the player hasn't been caught yet
         if (!_caughtPlayer)
         {
+
             //if (probability <= Affinity)
             {
                 //run to the player's last known position
                 Move(speedRun);
                 navMeshAgent.SetDestination(playerPosition);
                 gameObject.GetComponent<Renderer>().material = red;
+                eye.GetComponent<Renderer>().material = eyeRed;
             }
         }
 
@@ -228,6 +255,8 @@ public class EnemyController : Character
         navMeshAgent.enabled = true;
         //navMeshAgent.Move(originalEnemyPos);
         GetComponent<Renderer>().material = blue;
+        eye.GetComponent<Renderer>().material = eyeBlue;
+
         navMeshAgent.isStopped = false;
         navMeshAgent.speed = speedWalk;
         _waitTime = startWaitTime;
@@ -266,6 +295,8 @@ public class EnemyController : Character
     private void Patrolling()
     {
         gameObject.GetComponent<Renderer>().material = blue;
+        eye.GetComponent<Renderer>().material = eyeBlue;
+
 
         navMeshAgent.SetDestination(waypoints[currentWaypoint].position);
         Move(speedWalk);
