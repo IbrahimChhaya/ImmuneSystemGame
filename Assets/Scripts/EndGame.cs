@@ -85,7 +85,7 @@ public class EndGame : MonoBehaviour
         //go to each enemy and change values
         foreach (GameObject e in enemies)
         {
-            //random values in a range to allow for stomatic hypermutation
+            //random values in a range to allow for somatic hypermutation
             var randAngle = Random.Range(fovAngle - (fovAngle * (diff/100)), fovAngle + diff);
             var randRadius = Random.Range(fovRadius - (fovRadius * (diff / 100)), fovRadius + diff);
             var randMaxHealth = Random.Range(maxHealth - (maxHealth * (diff / 100)), maxHealth + diff);

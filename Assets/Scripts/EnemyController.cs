@@ -56,6 +56,14 @@ public class EnemyController : Character
     public Image healthBarSprite;
     
     private float diff = 20f;
+    public GameObject mainCam;
+    public GameObject germinalCenter;
+    public GameObject germinalPos2;
+    public GameObject clone;
+
+    public Material black;
+
+    private GameObject[] enemies;
 
     // Start is called before the first frame update
     void Start()
@@ -75,7 +83,7 @@ public class EnemyController : Character
 
         _waitTime = startWaitTime;
 
-        sign = new GameObject("enemyAffinity");
+        sign = new GameObject("enemyAffinity" + gameObject.name);
         sign.transform.rotation = Camera.main.transform.rotation;
 
         tm = sign.AddComponent<TextMesh>();
@@ -129,7 +137,7 @@ public class EnemyController : Character
         {
             yield return wait;
             Health -= 5;
-            healthBarSprite.fillAmount = (Health / 50f);
+            healthBarSprite.fillAmount = (Health / MaxHealth);
             if (Health == 0)
             {
                 Destroy(gameObject);
@@ -185,7 +193,6 @@ public class EnemyController : Character
 
 
     }
-
 
     void FixedUpdate()
     {
@@ -246,10 +253,65 @@ public class EnemyController : Character
         ScoreManager.instance.AddDeath();
         Affinity += 10;
         end = true;
-        CollisionHelper();
+        tm.text = "I am dead";
+        gameObject.GetComponent<Renderer>().material = black;
         IsDead = true;
+        Health = 0;
         ClonalHelper();
+        takeToGerminal();
+        //CollisionHelper();
+        //StartCoroutine(anotherWaiter());
+
         IsDead = false;
+        
+    }
+
+    private void takeToGerminal()
+    {
+        enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach(GameObject e in enemies)
+        {
+            if(e != gameObject)
+            {
+                e.SetActive(false);
+            }
+        }
+        player.SetActive(false);
+        mainCam.SetActive(true);
+        navMeshAgent.SetDestination(germinalCenter.transform.position);
+        
+        StartCoroutine(waiter());
+        
+    }
+
+    IEnumerator waiter()
+    {
+        yield return new WaitForSeconds(6f);
+        if (!navMeshAgent.pathPending)
+        {
+            if (navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
+            {
+                if (navMeshAgent.hasPath || navMeshAgent.velocity.sqrMagnitude == 0f)
+                {
+                    clone.SetActive(true);
+                    clone.GetComponent<NavMeshAgent>().SetDestination(germinalPos2.transform.position);
+                }
+            }
+        }
+        yield return new WaitForSeconds(6f);
+        clone.SetActive(false);
+        player.SetActive(true);
+        mainCam.SetActive(false);
+        CollisionHelper();
+    }
+
+    IEnumerator anotherWaiter()
+    {
+        yield return new WaitForSeconds(6f);
+        CollisionHelper();
+        clone.SetActive(false);
+        player.SetActive(true);
+        mainCam.SetActive(false);
     }
 
     public void CollisionHelper()
@@ -276,12 +338,13 @@ public class EnemyController : Character
             player.transform.position = PlayerController.originalPlayerPos;
             cc.enabled = true;
 
-            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            //GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
             //int i = 0;
             foreach (GameObject e in enemies)
             {
                 if (e != gameObject)
                 {
+                    e.SetActive(true);
                     if (Random.Range(1, 100) <= probability)
                         e.GetComponent<EnemyController>().Affinity = Affinity;
                     e.GetComponent<EnemyController>().CollisionHelper();
@@ -298,6 +361,8 @@ public class EnemyController : Character
 
         _caughtPlayer = false;
         tm.text = "Affinity: " + Affinity;
+        Health = MaxHealth;
+        healthBarSprite.fillAmount = 1;
     }
 
     private void ClonalHelper()
