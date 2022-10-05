@@ -53,15 +53,16 @@ public class EnemyController : Character
     private Vector3 originalEnemyPos;
     public bool end = false;
 
-    private int age;
     public Image healthBarSprite;
+    
+    private float diff = 20f;
 
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         originalPlayerPos = player.transform.position;
-
+        
         StartCoroutine(FoVRoutine());
         StartCoroutine(lifelineCount());
 
@@ -103,10 +104,10 @@ public class EnemyController : Character
         originalEnemyPos = transform.position;
 
         //random fovangle and radius
-        fovAngle = Random.Range(95, 120);
-        fovRadius = Random.Range(5, 9);
+        fovAngle = Random.Range(70, 180);
+        fovRadius = Random.Range(4, 10);
 
-        age = 15;
+        Health = MaxHealth;
     }
 
     private IEnumerator FoVRoutine()
@@ -127,8 +128,12 @@ public class EnemyController : Character
         while (true)
         {
             yield return wait;
-            age -= 5;
-            healthBarSprite.fillAmount = Health / MaxHealth;
+            Health -= 5;
+            healthBarSprite.fillAmount = (Health / 50f);
+            if (Health == 0)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 
@@ -242,6 +247,9 @@ public class EnemyController : Character
         Affinity += 10;
         end = true;
         CollisionHelper();
+        IsDead = true;
+        ClonalHelper();
+        IsDead = false;
     }
 
     public void CollisionHelper()
@@ -290,6 +298,32 @@ public class EnemyController : Character
 
         _caughtPlayer = false;
         tm.text = "Affinity: " + Affinity;
+    }
+
+    private void ClonalHelper()
+    {
+        //get all enemies
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        
+        //go to each enemy and change values
+        foreach (GameObject e in enemies)
+        {
+            if(e != gameObject)
+            {
+                //random values in a range to allow for stomatic hypermutation
+                var randAngle = Random.Range(fovAngle - (fovAngle * (diff / 100)), fovAngle + diff);
+                var randRadius = Random.Range(fovRadius - (fovRadius * (diff / 100)), fovRadius + diff);
+                var randMaxHealth = Random.Range(MaxHealth - (MaxHealth * (diff / 100)), MaxHealth + diff);
+                var randAffinity = Random.Range(Affinity - (Affinity * (diff / 100)), Affinity + diff);
+
+                e.GetComponent<EnemyController>().fovAngle = randAngle;
+                e.GetComponent<EnemyController>().fovRadius = randRadius;
+                e.GetComponent<EnemyController>().MaxHealth = randMaxHealth;
+                e.GetComponent<EnemyController>().Affinity = randAffinity;
+            }
+        }
+
+        diff -= Random.Range(0, 5);
     }
 
     private void Patrolling()
@@ -501,7 +535,5 @@ public class EnemyController : Character
     }
 }
 
-/* next up is probabilistic detection and attack
- * do a more complicated string distance metric
- * then clonal expansion of those that did detection and attack
+/* then clonal expansion of those that did detection and attack
  */
