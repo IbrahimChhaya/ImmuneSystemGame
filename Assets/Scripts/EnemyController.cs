@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+using UnityEngine.SceneManagement;
 
 public class EnemyController : Character
 {
@@ -138,7 +139,7 @@ public class EnemyController : Character
             yield return wait;
             Health -= 5;
             healthBarSprite.fillAmount = (Health / MaxHealth);
-            if (Health == 0)
+            if (Health <= 0)
             {
                 Destroy(gameObject);
             }
@@ -286,7 +287,11 @@ public class EnemyController : Character
 
     IEnumerator waiter()
     {
-        yield return new WaitForSeconds(6f);
+        float time = 6f;
+        var currentScene = SceneManager.GetActiveScene().name;
+        if (currentScene == "BridgeScene")
+            time = 20f;
+        yield return new WaitForSeconds(time);
         if (!navMeshAgent.pathPending)
         {
             if (navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
@@ -300,6 +305,7 @@ public class EnemyController : Character
         }
         yield return new WaitForSeconds(6f);
         clone.SetActive(false);
+        clone.transform.position = germinalCenter.transform.position;
         player.SetActive(true);
         mainCam.SetActive(false);
         CollisionHelper();

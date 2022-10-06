@@ -46,6 +46,7 @@ public class EndGame : MonoBehaviour
         foreach (GameObject e in enemies)
         {
             e.GetComponent<EnemyController>().probability = Random.Range(1, 100);
+            e.GetComponent<EnemyController>().probability = Random.Range(1, 100);
             e.GetComponent<EnemyController>().CollisionHelper();
         }
 
