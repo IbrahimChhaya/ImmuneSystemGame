@@ -66,6 +66,9 @@ public class EnemyController : Character
 
     private GameObject[] enemies;
 
+    private Camera cam;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -84,7 +87,8 @@ public class EnemyController : Character
 
         _waitTime = startWaitTime;
 
-        sign = new GameObject("enemyAffinity" + gameObject.name);
+        sign = new GameObject("enemyAffinity");
+        sign.transform.parent = transform;
         sign.transform.rotation = Camera.main.transform.rotation;
 
         tm = sign.AddComponent<TextMesh>();
@@ -117,6 +121,9 @@ public class EnemyController : Character
         fovRadius = Random.Range(4, 10);
 
         Health = MaxHealth;
+
+        cam = Camera.main;
+
     }
 
     private IEnumerator FoVRoutine()
@@ -139,7 +146,7 @@ public class EnemyController : Character
             yield return wait;
             Health -= 5;
             healthBarSprite.fillAmount = (Health / MaxHealth);
-            if (Health <= 0)
+            if (Health <= 0 && IsDead == false)
             {
                 Destroy(gameObject);
             }
@@ -187,6 +194,8 @@ public class EnemyController : Character
     private void Update()
     {
         sign.transform.position = transform.position + Vector3.up * 3f;
+        sign.transform.rotation = Quaternion.LookRotation(sign.transform.position - cam.transform.position);
+
         /*if (EndGame.end)
         {
             CollisionHelper();
@@ -263,7 +272,6 @@ public class EnemyController : Character
         //CollisionHelper();
         //StartCoroutine(anotherWaiter());
 
-        IsDead = false;
         
     }
 
@@ -279,6 +287,7 @@ public class EnemyController : Character
         }
         player.SetActive(false);
         mainCam.SetActive(true);
+        Move(5);
         navMeshAgent.SetDestination(germinalCenter.transform.position);
         
         StartCoroutine(waiter());
@@ -303,7 +312,7 @@ public class EnemyController : Character
                 }
             }
         }
-        yield return new WaitForSeconds(6f);
+        yield return new WaitForSeconds(time);
         clone.SetActive(false);
         clone.transform.position = germinalCenter.transform.position;
         player.SetActive(true);
@@ -365,6 +374,7 @@ public class EnemyController : Character
         }
         end = false;
 
+        IsDead = false;
         _caughtPlayer = false;
         tm.text = "Affinity: " + Affinity;
         Health = MaxHealth;

@@ -55,7 +55,7 @@ public class MainMenu : MonoBehaviour
         if(PlayerPrefs.HasKey("signatureLength"))
         {
             int length = PlayerPrefs.GetInt("signatureLength");
-            stringLength.text = length.ToString();
+            stringLength.text = length.ToString() + " chars";
             slider.value = length;
         }
 
