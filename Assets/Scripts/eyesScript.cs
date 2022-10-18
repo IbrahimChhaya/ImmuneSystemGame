@@ -39,6 +39,7 @@ public class eyesScript : MonoBehaviour
 
         if(temp)
         {
+            PlayerController.isBeingChased = true;
             //change material of left and right eyes to red
             leftEye.GetComponent<Renderer>().material = red;
             rightEye.GetComponent<Renderer>().material = red;
@@ -47,6 +48,7 @@ public class eyesScript : MonoBehaviour
         }
         else
         {
+            PlayerController.isBeingChased = false;
             //change material of left and right eyes to default
             leftEye.GetComponent<Renderer>().material = white;
             rightEye.GetComponent<Renderer>().material = white;

@@ -49,8 +49,8 @@ public class EnemyController : Character
 
     public int probability;
 
-    private Vector3 originalPlayerPos;
-    private Vector3[] originalEnemyPoses;
+    //private Vector3 originalPlayerPos;
+    //private Vector3[] originalEnemyPoses;
     private Vector3 originalEnemyPos;
     public bool end = false;
 
@@ -68,12 +68,19 @@ public class EnemyController : Character
 
     private Camera cam;
 
+    private float detectionTime = 0f;
+    private float initialDetectionTime = 0f;
+    public Text screenTimer;
+    private int detectionCount = 0;
+
+
+    private int iteration = 1;
 
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-        originalPlayerPos = player.transform.position;
+        //originalPlayerPos = player.transform.position;
         
         StartCoroutine(FoVRoutine());
         StartCoroutine(lifelineCount());
@@ -181,6 +188,13 @@ public class EnemyController : Character
                         canSeePlayer = true;
                         isPatrol = false;
                         playerPosition = player.transform.position;
+                        detectionCount++;
+
+                        if (detectionCount == 1)
+                        {
+                            initialDetectionTime = detectionTime;
+                        }
+
                     }
                 }
             }
@@ -202,6 +216,8 @@ public class EnemyController : Character
         }*/
 
 
+        //screenTimer.text = "Time to detection: " + detectionTime.ToString("#.00");
+
     }
 
     void FixedUpdate()
@@ -219,6 +235,9 @@ public class EnemyController : Character
 
     private void Chasing()
     {
+        detectionTime += Time.deltaTime;
+        //screenTimer.text = detectionTime.ToString("#.00");
+
         //if the player hasn't been caught yet
         if (!_caughtPlayer)
         {
@@ -272,7 +291,6 @@ public class EnemyController : Character
         //CollisionHelper();
         //StartCoroutine(anotherWaiter());
 
-        
     }
 
     private void takeToGerminal()
@@ -312,7 +330,7 @@ public class EnemyController : Character
                 }
             }
         }
-        yield return new WaitForSeconds(time);
+        yield return new WaitForSeconds(6f);
         clone.SetActive(false);
         clone.transform.position = germinalCenter.transform.position;
         player.SetActive(true);
@@ -379,6 +397,14 @@ public class EnemyController : Character
         tm.text = "Affinity: " + Affinity;
         Health = MaxHealth;
         healthBarSprite.fillAmount = 1;
+
+
+        iteration++;
+        var currentScene = SceneManager.GetActiveScene().name;
+        if (currentScene == "BridgeScene")
+            PlayerPrefs.SetInt("BridgeIterations", iteration);
+        else
+            PlayerPrefs.SetInt("DungeonIterations", iteration);
     }
 
     private void ClonalHelper()
@@ -411,7 +437,6 @@ public class EnemyController : Character
     {
         gameObject.GetComponent<Renderer>().material = blue;
         eye.GetComponent<Renderer>().material = eyeBlue;
-
 
         navMeshAgent.SetDestination(waypoints[currentWaypoint].position);
         Move(speedWalk);

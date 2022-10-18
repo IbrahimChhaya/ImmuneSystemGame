@@ -52,7 +52,8 @@ public class PlayerMovement : MonoBehaviour
             speedBoost = 1f;
 
 
-        Vector3 move = transform.right * x + transform.forward * z;
+        //Vector3 move = transform.right * z + transform.forward * x;
+        Vector3 move = new Vector3(x, 0, z);
 
         controller.Move(move * (baseSpeed + speedBoost) * Time.deltaTime);
 

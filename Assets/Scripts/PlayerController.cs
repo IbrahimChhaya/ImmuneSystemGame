@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : Character
 {
@@ -10,6 +11,7 @@ public class PlayerController : Character
     public static string tempSignature;
 
     public static bool isBeingChased;
+
     private void Awake()
     {
         instance = this;
@@ -26,7 +28,7 @@ public class PlayerController : Character
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public string getSignature()

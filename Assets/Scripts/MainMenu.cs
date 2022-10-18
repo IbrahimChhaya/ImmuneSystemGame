@@ -19,6 +19,7 @@ public class MainMenu : MonoBehaviour
     public GameObject mainMenu;
     public GameObject optionsMenu;
     public GameObject playMenu;
+    public GameObject dashMenu;
 
     public TMP_Text stringLength;
     public Slider slider;
@@ -79,6 +80,13 @@ public class MainMenu : MonoBehaviour
     public void Options()
     {
         optionsMenu.SetActive(true);
+        gameObject.SetActive(false);
+    }
+
+
+    public void Dashboard()
+    {
+        dashMenu.SetActive(true);
         gameObject.SetActive(false);
     }
 
