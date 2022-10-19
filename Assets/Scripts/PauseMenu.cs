@@ -30,6 +30,7 @@ public class PauseMenu : MonoBehaviour
 
     public void QuitToMenu()
     {
+        Debug.Log("ddwad");
         Time.timeScale = 1f;
         SceneManager.LoadScene("MenuScene");
     }

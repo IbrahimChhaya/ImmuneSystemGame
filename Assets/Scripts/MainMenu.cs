@@ -26,6 +26,8 @@ public class MainMenu : MonoBehaviour
 
     public GameObject dungeonButton;
     public GameObject bridgeButton;
+    public GameObject dashButton;
+    public TextMeshProUGUI dashText;
 
     private Image dungeonImage;
     private Image bridgeImage;
@@ -62,6 +64,14 @@ public class MainMenu : MonoBehaviour
 
         dungeonImage = dungeonButton.GetComponent<Image>();
         bridgeImage = bridgeButton.GetComponent<Image>();
+
+        var dungeonIteration = PlayerPrefs.GetInt("DungeonIterations");
+        var bridgeIteration = PlayerPrefs.GetInt("BridgeIterations");
+        if (dungeonIteration == 0 && bridgeIteration == 0)
+        {
+            dashText.color = new Color(200, 200, 200);
+            dashButton.GetComponent<Button>().interactable = false;
+        }
     }
 
     // Update is called once per frame
@@ -164,6 +174,12 @@ public class MainMenu : MonoBehaviour
     {
         mainMenu.SetActive(true);
         playMenu.SetActive(false);
+    }
+
+    public void BackDash()
+    {
+        mainMenu.SetActive(true);
+        dashMenu.SetActive(false);
     }
 
     public void SelectMap()

@@ -7,6 +7,7 @@ using UnityEngine.AI;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 using UnityEngine.SceneManagement;
+using Assets.Scripts;
 
 public class EnemyController : Character
 {
@@ -68,20 +69,20 @@ public class EnemyController : Character
 
     private Camera cam;
 
-    private float detectionTime = 0f;
-    private float initialDetectionTime = 0f;
+    public float detectionTime = 0f;
+    public float initialDetectionTime = 0f;
     public Text screenTimer;
     private int detectionCount = 0;
 
 
-    private int iteration = 1;
+    //private int iteration = 1;
 
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         //originalPlayerPos = player.transform.position;
-        
+
         StartCoroutine(FoVRoutine());
         StartCoroutine(lifelineCount());
 
@@ -106,7 +107,7 @@ public class EnemyController : Character
         else if (activeDistance == "L")
             CalculateLevenshtein();
         else
-        { 
+        {
             CalculateAffinity();
             PlayerPrefs.SetString("activeDistance", "H");
         }
@@ -131,6 +132,19 @@ public class EnemyController : Character
 
         cam = Camera.main;
 
+        var currentScene = SceneManager.GetActiveScene().name;
+        if (currentScene == "BridgeScene")
+        {
+            EnemyDetectionTimes.bridgeTimes = new List<float>();
+            EnemyDetectionTimes.bAffinities = new List<float>();
+            EnemyDetectionTimes.bInitialDetections = new List<float>();
+        }
+        else
+        { 
+            EnemyDetectionTimes.dungeonTimes = new List<float>();
+            EnemyDetectionTimes.dAffinities = new List<float>();
+            EnemyDetectionTimes.dInitialDetections = new List<float>();
+        }
     }
 
     private IEnumerator FoVRoutine()
@@ -193,6 +207,18 @@ public class EnemyController : Character
                         if (detectionCount == 1)
                         {
                             initialDetectionTime = detectionTime;
+                            //if there isn't a dungeon detection time, make it zero
+                            var currentScene = SceneManager.GetActiveScene().name;
+                            if (currentScene == "BridgeScene")
+                            { 
+                                PlayerPrefs.SetFloat("BInitialDetection", initialDetectionTime);
+                                EnemyDetectionTimes.bInitialDetections.Add(initialDetectionTime);
+                            }
+                            else
+                            { 
+                                PlayerPrefs.SetFloat("DInitialDetection", initialDetectionTime);
+                                EnemyDetectionTimes.dInitialDetections.Add(initialDetectionTime);
+                            }
                         }
 
                     }
@@ -235,7 +261,6 @@ public class EnemyController : Character
 
     private void Chasing()
     {
-        detectionTime += Time.deltaTime;
         //screenTimer.text = detectionTime.ToString("#.00");
 
         //if the player hasn't been caught yet
@@ -314,7 +339,7 @@ public class EnemyController : Character
 
     IEnumerator waiter()
     {
-        float time = 6f;
+        float time = 10f;
         var currentScene = SceneManager.GetActiveScene().name;
         if (currentScene == "BridgeScene")
             time = 20f;
@@ -399,12 +424,20 @@ public class EnemyController : Character
         healthBarSprite.fillAmount = 1;
 
 
-        iteration++;
+        //PlayerPrefs.SetFloat("")
+
+
         var currentScene = SceneManager.GetActiveScene().name;
         if (currentScene == "BridgeScene")
-            PlayerPrefs.SetInt("BridgeIterations", iteration);
+        {
+            EnemyDetectionTimes.bridgeTimes.Add(detectionTime);
+            EnemyDetectionTimes.bAffinities.Add(Affinity);
+        }
         else
-            PlayerPrefs.SetInt("DungeonIterations", iteration);
+        {
+            EnemyDetectionTimes.dungeonTimes.Add(detectionTime);
+            EnemyDetectionTimes.dAffinities.Add(Affinity);
+        }
     }
 
     private void ClonalHelper()
@@ -422,19 +455,25 @@ public class EnemyController : Character
                 var randRadius = Random.Range(fovRadius - (fovRadius * (diff / 100)), fovRadius + diff);
                 var randMaxHealth = Random.Range(MaxHealth - (MaxHealth * (diff / 100)), MaxHealth + diff);
                 var randAffinity = Random.Range(Affinity - (Affinity * (diff / 100)), Affinity + diff);
+                var randSpeed = Random.Range(speedRun - (speedRun * (diff / 100)), speedRun + diff);
+                if (randSpeed > 8)
+                    randSpeed = 8;
 
                 e.GetComponent<EnemyController>().fovAngle = randAngle;
                 e.GetComponent<EnemyController>().fovRadius = randRadius;
                 e.GetComponent<EnemyController>().MaxHealth = randMaxHealth;
                 e.GetComponent<EnemyController>().Affinity = randAffinity;
+                e.GetComponent<EnemyController>().speedRun = randSpeed;
             }
         }
-
+        //add iteration to increase diff values
         diff -= Random.Range(0, 5);
     }
 
     private void Patrolling()
     {
+        detectionTime += Time.deltaTime;
+
         gameObject.GetComponent<Renderer>().material = blue;
         eye.GetComponent<Renderer>().material = eyeBlue;
 
@@ -487,7 +526,7 @@ public class EnemyController : Character
         var playerSignature = PlayerController.tempSignature;
 
         Affinity = playerSignature.Zip(Signature, (ps, s) => ps != s).Count(f => f);
-        Affinity = 100 - ((Affinity / 12) * 100);
+        Affinity = 100 - ((Affinity / Signature.Length) * 100);
     }
 
     public void CalculateLevenshtein()
@@ -520,7 +559,7 @@ public class EnemyController : Character
             }
         }
         Affinity = matrix[string1.Length, string2.Length];
-        Affinity = 100 - ((Affinity / 12) * 100);
+        Affinity = 100 - ((Affinity / Signature.Length) * 100);
     }
 
     // Function to calculate the Jaro Similarity of two strings
