@@ -11,6 +11,7 @@ TagManager:
   - Levenshtein
   - Unnamed
   - MainMenu
+  - InitialGraph
   layers:
   - Default
   - TransparentFX

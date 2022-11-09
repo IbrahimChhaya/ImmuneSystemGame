@@ -74,8 +74,11 @@ public class EnemyController : Character
     public Text screenTimer;
     private int detectionCount = 0;
 
-
-    //private int iteration = 1;
+    public List<float> fovRadiuses = new List<float>();
+    public List<float> fovAngles = new List<float>();
+    public List<float> detectionTimes = new List<float>();
+    public List<float> affinities = new List<float>();
+    public List<float> runningSpeeds = new List<float>();
 
     // Start is called before the first frame update
     void Start()
@@ -207,6 +210,7 @@ public class EnemyController : Character
                         if (detectionCount == 1)
                         {
                             initialDetectionTime = detectionTime;
+                            detectionTimes.Add(initialDetectionTime);
                             //if there isn't a dungeon detection time, make it zero
                             var currentScene = SceneManager.GetActiveScene().name;
                             if (currentScene == "BridgeScene")
@@ -388,6 +392,15 @@ public class EnemyController : Character
         navMeshAgent.isStopped = false;
         navMeshAgent.speed = speedWalk;
         _waitTime = startWaitTime;
+
+        initialDetectionTime = 0;
+        detectionTime = 0;
+        detectionCount = 0;
+
+        affinities.Add(Affinity);
+        fovRadiuses.Add(fovRadius);
+        fovAngles.Add(fovAngle);
+        runningSpeeds.Add(speedRun);
 
         if (end)
         {

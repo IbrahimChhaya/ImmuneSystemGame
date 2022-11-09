@@ -488,6 +488,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b658ad3c3e4ec3b40999f24af89d38f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemies: []
 --- !u!114 &26928331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15349,6 +15350,7 @@ GameObject:
   - component: {fileID: 983352757}
   - component: {fileID: 983352756}
   - component: {fileID: 983352755}
+  - component: {fileID: 983352759}
   m_Layer: 5
   m_Name: Canvas2
   m_TagString: Untagged
@@ -15442,6 +15444,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &983352759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 983352754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45b6e4895fb894245a096eeb55c3804e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathCounterText: {fileID: 914909040}
+  winCounterText: {fileID: 274237166}
+  activeDistance: {fileID: 1542115720}
 --- !u!1001 &986971300
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -21324,6 +21341,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b658ad3c3e4ec3b40999f24af89d38f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemies: []
 --- !u!114 &1404390483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21374,6 +21392,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b658ad3c3e4ec3b40999f24af89d38f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemies:
+  - {fileID: 564971191}
+  - {fileID: 1960690479}
+  - {fileID: 276774560}
 --- !u!4 &1405142505 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8702035252243329273, guid: 01758e662295c9347b35b7bdee71f5b4, type: 3}

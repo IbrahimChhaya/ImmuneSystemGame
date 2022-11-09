@@ -34,6 +34,15 @@ public class MainMenu : MonoBehaviour
 
     private string activeMap;
 
+    public GameObject dashOne;
+    public GameObject dashTwo;
+    public GameObject dashThree;
+
+    public GameObject bridgeDash;
+    public GameObject bridgeDash2;
+    public GameObject dungeonDash;
+    public GameObject dungeonDash2;
+
     //public Button playButton;
     public GameObject PlayButton;
     // Start is called before the first frame update
@@ -240,5 +249,78 @@ public class MainMenu : MonoBehaviour
         playButton.interactable = true;
         TMP_Text playText = playButton.GetComponentInChildren<TMP_Text>();
         playText.color = Color.white;
+    }
+
+    public void DashMore()
+    {
+        dashOne.SetActive(false);
+        dashTwo.SetActive(true);
+    }
+
+    public void DashMore2()
+    {
+        dashTwo.SetActive(false);
+        dashThree.SetActive(true);
+    }
+
+    public void backDash()
+    {
+        dashOne.SetActive(true);
+        dashTwo.SetActive(false);
+    }
+
+    public void backDash2()
+    {
+        dashTwo.SetActive(true);
+        bridgeDash.SetActive(false);
+    }
+
+    public void ShowBridgeDash()
+    {
+        bridgeDash.SetActive(true);
+        dashTwo.SetActive(false);
+    }
+
+    public void ShowDungeonDash()
+    {
+        dungeonDash.SetActive(true);
+        dashTwo.SetActive(false);
+    }
+
+    public void MoreBridgeDash()
+    {
+        bridgeDash2.SetActive(true);
+        bridgeDash.SetActive(false);
+    }
+
+    public void backBridgeDash()
+    {
+        bridgeDash.SetActive(true);
+        bridgeDash2.SetActive(false);
+    }
+
+    public void BridgeDashback2()
+    {
+        bridgeDash.SetActive(true);
+        bridgeDash2.SetActive(false);
+    }
+
+    public void DungeonMore()
+    {
+        dungeonDash2.SetActive(true);
+        dungeonDash.SetActive(false);
+    }
+    
+    public void DungeonBack()
+    {
+        dashTwo.SetActive(true);
+        dungeonDash.SetActive(false);
+    }
+
+
+    public void backDungeonDash()
+    {
+        dungeonDash.SetActive(true);
+        dungeonDash2.SetActive(false);
     }
 }

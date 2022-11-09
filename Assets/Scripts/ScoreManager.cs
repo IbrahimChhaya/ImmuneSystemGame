@@ -55,6 +55,8 @@ public class ScoreManager : MonoBehaviour
             PlayerPrefs.SetInt("BridgeIterations", iteration);
         else
             PlayerPrefs.SetInt("DungeonIterations", iteration);
+
+        PlayerPrefs.SetInt("currentIteration", iteration);
     }
 
     // Update is called once per frame

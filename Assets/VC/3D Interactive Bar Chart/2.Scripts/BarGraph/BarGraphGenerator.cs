@@ -53,6 +53,13 @@ namespace BarGraph.VittorCloud
     {
         public string XValue; //xvalue
         public float YValue = 0; // yvalue
+
+        public XYBarValues(string xval, float yval)
+        {
+            this.XValue = xval;
+            this.YValue = yval;
+        }
+
     }
 
     public class BarGraphGenerator : MonoBehaviour
