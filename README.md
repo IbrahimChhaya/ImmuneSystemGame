@@ -3,6 +3,8 @@
 Immune Raider is a serious game inspired by the human biological immune system, demonstrating how it functions while powered by artificial immune algorithms.
 Immune Raider was among the Top 5 won the University of Johannesburg's 2022 Projects Day under the Honours category.
 
+It was built using the Unity game engine.
+
 Video walkthrough: https://www.youtube.com/watch?v=7UxoI-a0Idc ![Youtube](https://img.shields.io/badge/YouTube-FF0000.svg?style=for-the-badge&logo=YouTube&logoColor=white)
 
 ![Unity](https://img.shields.io/badge/Unity-FFFFFF.svg?style=for-the-badge&logo=Unity&logoColor=black)
