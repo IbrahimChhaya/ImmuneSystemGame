@@ -37,7 +37,7 @@ Video walkthrough: https://www.youtube.com/watch?v=7UxoI-a0Idc ![Youtube](https:
 
 ## Germinal Centre
 <p align="center">
-      <img width="300" src="/Recordings/Germinal Centre.png">
+      <img width="300" src="/Recordings/GerminalCentre.png">
 </p>
 
 ## Bridge Map
